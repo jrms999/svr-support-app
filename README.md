@@ -17,3 +17,7 @@ No storing medical records
 Least-privilege security rules (resident reads only their utility account)
 
 Staff posting restricted by role
+
+Audit log for notice changes (phase 2)
+
+
