@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() { return request.auth != null; }
+    function isStaff() { return isSignedIn() && request.auth.token.role == 'staff'; }
+    function isSelf(uid) { return isSignedIn() && request.auth.uid == uid; }
+
+    // Public read content (can be tightened to signed-in if preferred)
+    match /resources/{docId} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+
+    match /notices/{docId} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+
+    // Resident private utility account summary
+    match /utilityAccounts/{uid} {
+      allow read: if isSelf(uid) || isStaff();
+      allow write: if isStaff(); // Staff updates balances; webhook uses Admin SDK (bypasses rules)
+    }
+
+    // Payment records written by Admin SDK webhook; residents can read their own
+    match /utilityPayments/{paymentId} {
+      allow read: if isSignedIn() && resource.data.uid == request.auth.uid;
+      allow write: if false;
+    }
+
+    // User profile
+    match /users/{uid} {
+      allow read: if isSelf(uid) || isStaff();
+      allow create: if isSelf(uid);
+      allow update: if isSelf(uid) || isStaff();
+      allow delete: if isStaff();
+    }
+  }
+}
