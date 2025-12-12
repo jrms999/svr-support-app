@@ -1,0 +1,36 @@
+Repo file for STA 
+
+
+svr-support-app/
+  apps/
+    web/                       # Next.js PWA
+      src/
+        app/                   # routes
+          login/
+          home/
+          health/
+          welfare/
+          legal/
+          local/
+          utilities/
+          notices/
+          account/
+        components/
+        lib/
+          firebase.ts
+          auth.ts
+          site.ts
+          stripe.ts
+        styles/
+      public/
+      next.config.js
+  functions/                   # Firebase Functions (Stripe + admin)
+    src/
+      index.ts
+      stripe/
+      webhooks/
+  docs/
+    product-brief.md
+    wireframes.md
+    data-model.md
+    privacy-safety.md
